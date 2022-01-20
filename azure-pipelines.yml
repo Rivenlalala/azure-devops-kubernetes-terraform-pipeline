@@ -16,11 +16,21 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - task: Docker@2
-      displayName: Build an image
-      inputs:
-        containerRegistry: 'azure-devops-test'
-        repository: 'rivenlalala/azure-devops-test'
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: '$(tag)'
+      - task: DownloadSecureFile@1
+        name: public_key
+        inputs:
+          secureFile: 'azure_ssh.pub'
+      - task: TerraformCLI@0
+        inputs:
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/configuration/iaac/azure/kubernetes'
+          commandOptions: '-var client_id=$(client_id) -var client_secret=$(client_secret) -var ssh_public_key=$(public_key.secureFilePath)'
+          backendType: 'azurerm'
+          backendServiceArm: 'azure-service-connection'
+          ensureBackend: true
+          backendAzureRmResourceGroupName: 'azure-devops-terraform-backend-rg'
+          backendAzureRmResourceGroupLocation: 'eastasia'
+          backendAzureRmStorageAccountName: 'azure-devops-storage-account'
+          backendAzureRmContainerName: 'azure-devops-storage-account-container'
+          backendAzureRmKey: 'test.tfstate'
+          allowTelemetryCollection: true
