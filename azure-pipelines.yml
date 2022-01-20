@@ -30,7 +30,7 @@ stages:
           ensureBackend: true
           backendAzureRmResourceGroupName: 'azure-devops-terraform-backend-rg'
           backendAzureRmResourceGroupLocation: 'eastasia'
-          backendAzureRmStorageAccountName: 'azure-devops-storage-account'
+          backendAzureRmStorageAccountName: 'storage-account'
           backendAzureRmContainerName: 'azure-devops-storage-account-container'
           backendAzureRmKey: 'test.tfstate'
           allowTelemetryCollection: true
